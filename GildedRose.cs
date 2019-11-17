@@ -5,10 +5,10 @@ namespace csharp
     public class GildedRose
     {
         IList<Item> Items;
-
+		
+		List<string> specialItemsQualityRulePassSellInDrop = new List<string>() { "Backstage passes" };
 		List<string> specialItemsQualityRuleMax = new List<string>() { "Sulfuras" };
 		List<string> specialItemsSellIn = new List<string>() { "Sulfuras" };
-		List<string> specialItemsQualityRulePassSellInDrop = new List<string>() { "Backstage passes" };
 
 		int maxItemQuality = 50;
 
@@ -21,7 +21,7 @@ namespace csharp
         {
 			foreach (Item item in Items)
 			{
-				item.Quality = CalculateNewQualityValue(item.Name, item.Quality);
+				item.Quality = CalculateNewQualityValue(item.Name, item.Quality, item.SellIn);
 				item.SellIn = GetQualityChangeOfValue(item.Name, item.SellIn);
 			}
         }
@@ -51,14 +51,14 @@ namespace csharp
 
 		public int CalculateNewQualityValue(string itemName, int itemQuality, int itemSellIn)
 		{
-			int qualityChange = GetQualityChangeOfValue(item.Name);
+			int qualityChange = GetQualityChangeOfValue(itemName, itemSellIn);
 
-			if (IsItSpecialItemQualityRulePassSellInDrop(itemName) && itemSellIn <= 0)
+			if (IterateForSpecialItemsReturnTrueFalse(specialItemsQualityRulePassSellInDrop, itemName) && itemSellIn <= 0)
 				return 0;
 
 			itemQuality = itemQuality + qualityChange;
 
-			if (itemQuality > maxItemQuality && !IsItSpecialItemQualityRuleMax(itemName))
+			if (itemQuality > maxItemQuality && !IterateForSpecialItemsReturnTrueFalse(specialItemsQualityRuleMax, itemName))
 				itemQuality = maxItemQuality;
 
 			if (itemQuality < 0)
@@ -69,25 +69,20 @@ namespace csharp
 
 		public int CalculateNewSellIn(string itemName, int itemSellIn)
 		{
-			if (IsItSpecialItemSellIn(itemName))
+			if (IterateForSpecialItemsReturnTrueFalse(specialItemsSellIn, itemName))
 				return itemSellIn;
 
 			return itemSellIn--;
 		}
-
-		public bool IsItSpecialItemQualityRuleMax(string itemName)
+		
+		public bool IterateForSpecialItemsReturnTrueFalse (List<string> list, string itemName)
 		{
-
-		}
-
-		public bool IsItSpecialItemSellIn(string itemName)
-		{
-
-		}
-
-		public bool IsItSpecialItemQualityRulePassSellInDrop(string itemName)
-		{
-
+			foreach (string specialNamePart in list)
+			{
+				if (itemName.Contains(specialNamePart))
+					return true;
+			}
+			return false;
 		}
 	}
 }
