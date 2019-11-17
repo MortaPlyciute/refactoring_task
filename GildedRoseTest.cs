@@ -64,13 +64,28 @@ namespace csharp
 
 		[Test]
 		[TestCase("Sulfuras", "Sulfuras", true)]
-		[TestCase("Sulfuras", "Conjured", true)]
+		[TestCase("Sulfuras", "Conjured", false)]
 		public void IterateForSpecialItemsReturnTrueFalse_DifferentParameters_ReturnGoodResult(string listItem, string itemName, bool expectedResult)
 		{
 			List<string> list = new List<string>() { listItem };
 			GildedRose gildeRose = new GildedRose(Items);
 			bool result = gildeRose.IterateForSpecialItemsReturnTrueFalse(list, itemName);
-			Assert.AreEqual(expectedResult, result, $"IterateForSpecialItemsReturnTrueFalse(): expected {expectedResult}; got {result}; parameters ( itemName {itemName}; itemSellIn {itemSellIn} )");
+			Assert.AreEqual(expectedResult, result, $"IterateForSpecialItemsReturnTrueFalse(): expected {expectedResult}; got {result}; parameters ( itemName {itemName}; list {listItem} )");
+		}
+
+		[Test]
+		[TestCase("Aged Brie", 30, 50, 50)]
+		[TestCase("Sulfuras", 3, 80, 80)]
+		[TestCase("Sulfuras", 0, 80, 80)]
+		[TestCase("Backstage passes", 0, 30, 0)]
+		[TestCase("+5 Dexterity Vest", 3, 4, 3)]
+		[TestCase("+5 Dexterity Vest", 0, 4, 2)]
+		[TestCase("+5 Dexterity Vest", 0, 0, 0)]
+		public void CalculateNewQualityValue_DifferentParameters_ReturnGoodResult(string itemName, int itemSellIn, int itemQuality, int expectedItemQualityResult)
+		{
+			GildedRose gildeRose = new GildedRose(Items);
+			int result = gildeRose.CalculateNewQualityValue(itemName, itemQuality, itemSellIn);
+			Assert.AreEqual(expectedItemQualityResult, result, $"CalculateNewQualityValue(): expected {expectedItemQualityResult}; got {result}; parameters ( itemName {itemName}; itemQuality {itemQuality}; itemSellIn {itemSellIn} )");
 		}
 	}
 }
