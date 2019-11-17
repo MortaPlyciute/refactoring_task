@@ -22,7 +22,7 @@ namespace csharp
 			foreach (Item item in Items)
 			{
 				item.Quality = CalculateNewQualityValue(item.Name, item.Quality, item.SellIn);
-				item.SellIn = GetQualityChangeOfValue(item.Name, item.SellIn);
+				item.SellIn = CalculateNewSellIn(item.Name, item.SellIn);
 			}
         }
 
@@ -72,7 +72,9 @@ namespace csharp
 			if (IterateForSpecialItemsReturnTrueFalse(specialItemsSellIn, itemName))
 				return itemSellIn;
 
-			return itemSellIn--;
+			itemSellIn--;
+
+			return itemSellIn < 0 ? 0 : itemSellIn;
 		}
 		
 		public bool IterateForSpecialItemsReturnTrueFalse (List<string> list, string itemName)
